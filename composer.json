@@ -9,6 +9,12 @@
       "email": "webdev@atmmarketing.com.au"
     }
   ],
+  "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/roave/security-advisories"
+        }
+    ], 
   "require-dev": {
     "requests/test-server": "dev-master"
   },

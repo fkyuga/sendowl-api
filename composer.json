@@ -28,12 +28,12 @@
   },
   "autoload": {
     "psr-4": {
-      "AtmMarketing\\SendOwlAPI\\": "src/"
+      "SendOwl\\": "src/"
       }
     },
   "autoload-dev": {
     "psr-4": {
-      "spec\\AtmMarketing\\SendOwlAPI\\": "spec/"
+      "spec\\SendOwl\\": "spec/"
     }
   }
 }

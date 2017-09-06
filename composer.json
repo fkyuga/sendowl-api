@@ -1,0 +1,33 @@
+{
+  "name": "atmmarketing/sendowl-api",
+  "description": "PHP interface for Send Owl API integration",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ricardo Lewis",
+      "email": "webdev@atmmarketing.com.au"
+    }
+  ],
+  "require-dev": {
+    "requests/test-server": "dev-master"
+  },
+  "require": {
+    "php": "~5.5",
+    "roave/security-advisories":"dev-master",
+    "rmccue/requests": ">=1.0"
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "autoload": {
+    "psr-4": {
+      "AtmMarketing\\SendOwlAPI\\": "src/"
+      }
+    },
+  "autoload-dev": {
+    "psr-4": {
+      "spec\\AtmMarketing\\SendOwlAPI\\": "spec/"
+    }
+  }
+}

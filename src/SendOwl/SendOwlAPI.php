@@ -3,6 +3,7 @@
 namespace SendOwl;
 
 use Requests;
+use GuzzleHttp\Client;
 
 /**
  * Class SendOwlAPI
@@ -11,7 +12,9 @@ use Requests;
 class SendOwlAPI {
 
 	private $orders_endpoint = 'https://www.sendowl.com/api/v1_3/orders';
-	private $products_endpoint = 'https://www.sendowl.com/api/v1_2/products';
+	private $products_endpoint = 'https://www.sendowl.com/api/v1/products';
+	const PRODUCT_TYPE_DIGITAL = 'digital';
+	
 	/**
 	 * @var string
 	 */
@@ -25,7 +28,9 @@ class SendOwlAPI {
 	 * @var array|null
 	 */
 	private $options;
-
+	// guzzle
+	private $Client;
+	
 	/**
 	 * SendOwlAPI constructor.
 	 *
@@ -33,11 +38,15 @@ class SendOwlAPI {
 	 * @param string $secret
 	 * @param array|null $options
 	 */
-	public function __construct( string $key, string $secret, array $options = null ) {
+	public function __construct( $key='', $secret='', $options = [] ) {
 		$this->key             = $key;
 		$this->secret          = $secret;
 		$this->options         = $options;
 		$this->options['auth'] = array( $this->get_key(), $this->get_secret() );
+		$this->Client = new Client([
+			'auth' => [$this->get_key(), $this->get_secret()] ,
+			'headers' => ['Accept' => 'application/json']
+		]);
 	}
 
 	/**
@@ -56,6 +65,32 @@ class SendOwlAPI {
 	 */
 	public function get_secret() {
 		return $this->secret;
+	}
+
+	/**
+	 * Create a new product
+	 *
+	 * @param int $product_id
+	 *
+	 * @return array
+	 * @throws SendOwlAPIException
+	 */
+	public function create_product( $fields = [] ) {
+		$headers  = [
+			'Accept' => 'application/json',
+			'Content-Type' => 'multipart/form-data'
+		];
+		
+		echo '$fields=';print_r($fields);
+		//$response = Requests::post( $this->products_endpoint , $headers, $fields, $this->options );
+		$response = $this->Client->request('POST',$this->products_endpoint , 
+			[ 
+				'multipart' => $fields  
+			]
+		);
+
+		return json_decode( $response->getBody(), true );
+		throw new SendOwlAPIException( $response->body, $response->status_code );
 	}
 
 	/**
@@ -90,10 +125,14 @@ class SendOwlAPI {
 	 */
 	public function get_product( $product_id = 0 ) {
 		$headers  = [ 'Accept' => 'application/json' ];
-		$response = Requests::get( $this->products_endpoint .'/' . $product_id, $headers, $this->options );
-		if ( $response->success ) {
-			return json_decode( $response->body, true );
-		}
+		//$response = Requests::get( $this->products_endpoint .'/' . $product_id, $headers, $this->options );
+		$response = $this->Client->request('GET', $this->products_endpoint .'/' . $product_id );
+		
+		//print_r($response);
+		
+		
+		return json_decode( $response->getBody(), true );
+		
 		throw new SendOwlAPIException( $response->body, $response->status_code );
 	}
 

@@ -19,7 +19,7 @@
     "requests/test-server": "dev-master"
   },
   "require": {
-    "php": "~5.5",
+    "php": "~7.3",
     "roave/security-advisories":"dev-master",
     "rmccue/requests": ">=1.0"
   },

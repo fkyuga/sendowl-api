@@ -13,6 +13,7 @@ class SendOwlAPI {
 
 	private $orders_endpoint = 'https://www.sendowl.com/api/v1_3/orders';
 	private $products_endpoint = 'https://www.sendowl.com/api/v1/products';
+	private $upload_endpoint = 'https://upload.sendowl.com/api/v1/products';
 	const PRODUCT_TYPE_DIGITAL = 'digital';
 	
 	/**
@@ -81,15 +82,30 @@ class SendOwlAPI {
 			'Content-Type' => 'multipart/form-data'
 		];
 		
-		echo '$fields=';print_r($fields);
+		//echo '$fields=';print_r($fields);
 		//$response = Requests::post( $this->products_endpoint , $headers, $fields, $this->options );
-		$response = $this->Client->request('POST',$this->products_endpoint , 
-			[ 
-				'multipart' => $fields  
-			]
+		$multipart = [];
+		foreach ($fields as $k => $v) {
+			
+			if($k == 'attachment'){
+				$v = fopen( $v, 'r' );
+			}
+			
+			$multipart[] = ['name' => 'product[' . $k . ']', 'contents' => $v ];
+			
+			
+			
+		}
+		
+		
+		$response = $this->Client->request('POST',$this->upload_endpoint, 
+			['multipart' => $multipart]
 		);
-
+		
+		//echo '$response=', print_r($response,1);
+		
 		return json_decode( $response->getBody(), true );
+
 		throw new SendOwlAPIException( $response->body, $response->status_code );
 	}
 

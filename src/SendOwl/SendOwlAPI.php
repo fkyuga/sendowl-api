@@ -13,6 +13,7 @@ class SendOwlAPI {
 
 	private $orders_endpoint = 'https://www.sendowl.com/api/v1_3/orders';
 	private $products_endpoint = 'https://www.sendowl.com/api/v1/products';
+	private $subscriptions_endpoint = 'https://www.sendowl.com/api/v1/subscriptions';
 	private $upload_endpoint = 'https://upload.sendowl.com/api/v1/products';
 	const PRODUCT_TYPE_DIGITAL = 'digital';
 	
@@ -48,6 +49,17 @@ class SendOwlAPI {
 			'auth' => [$this->get_key(), $this->get_secret()] ,
 			'headers' => ['Accept' => 'application/json']
 		]);
+	}
+
+   /**
+	* Retrieves all possible subscriptions
+	*
+	* @return array
+	* @throws SendOwlAPIException
+	*/
+	public function get_subscriptions() {
+		$response = $this->Client->request('GET', $this->subscriptions_endpoint);
+	    return json_decode($response->getBody(), true);
 	}
 
 	/**
